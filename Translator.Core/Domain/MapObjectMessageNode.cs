@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class MapObjectMessageNode : ObjectNodeBase
     {
         public List<string> Messages { get; set; }

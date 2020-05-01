@@ -25,4 +25,3 @@ namespace Translator.Core.Utility
         }
     }
 }
-

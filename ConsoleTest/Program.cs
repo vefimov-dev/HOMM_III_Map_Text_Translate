@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Translator.Core;
 using Translator.Core.Domain;
+using Translator.Core.Translate;
 
 namespace ConsoleTest
 {
@@ -21,14 +22,16 @@ namespace ConsoleTest
             }
 
             TitleNames.Initialize(eliData);
-            Encoding win1251 = Encoding.GetEncoding("Windows-1251");
-            var lines = File.ReadAllLines("Way Home.txt", win1251);
+            
+            var lines = File.ReadAllLines("xiedu.txt", Encoding.Default);
 
             var mt = MapTextParser.ParseMap(lines);
 
+            var tt = MapTextTranslator.Translate(mt, new TestTranslateProccessor());
+
             var write = MapTextWriter.WriteMapText(mt, lines);
 
-            File.WriteAllLines("Paragon_.txt", write, win1251);
+            File.WriteAllLines("Paragon_.txt", write, Encoding.Default);
 
            // Console.ReadLine();
         }

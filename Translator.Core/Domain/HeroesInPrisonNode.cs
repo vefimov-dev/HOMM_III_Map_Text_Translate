@@ -1,5 +1,6 @@
 ﻿namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class HeroesInPrisonNode : ObjectNodeBase
     {
         public TextNode Name { get; set; }

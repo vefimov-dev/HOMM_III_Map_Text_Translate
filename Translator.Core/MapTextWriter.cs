@@ -70,6 +70,10 @@ namespace Translator.Core
 
                             ++i; // empty line
                         }
+                        else
+                        {
+                            ++i;
+                        }
 
                         if (town.VisitedHero != null)
                         {

@@ -1,5 +1,6 @@
 ﻿namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class HeroesNode
     {
         public TextNode Name { get; set; }
@@ -26,6 +27,7 @@
         }
     }
 
+    [System.Serializable]
     public class TownStartHeroesNode : HeroesNode
     {
         public string Title { get; set; }

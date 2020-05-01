@@ -1,5 +1,6 @@
 ﻿namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class TextNode
     {
         public string Title { get; set; }

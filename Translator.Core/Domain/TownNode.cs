@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class TownNode : ObjectNodeBase
     {
         public TextNode Name { get; set; }

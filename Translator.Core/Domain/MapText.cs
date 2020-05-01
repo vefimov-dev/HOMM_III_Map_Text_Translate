@@ -2,6 +2,7 @@
 
 namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class MapText
     {
         public TextNode Name { get; set; }

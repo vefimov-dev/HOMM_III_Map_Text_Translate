@@ -1,5 +1,6 @@
 ﻿namespace Translator.Core.Domain
 {
+    [System.Serializable]
     public class EventNode
     {
         public TextNode Name { get; set; }
