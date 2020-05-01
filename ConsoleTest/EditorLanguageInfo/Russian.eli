@@ -1,0 +1,32 @@
+Русский
+MapName#===== Название карты =====
+MapDescription#===== Описание карты =====
+RumorsSectionTitle#===== Слухи =====
+RumorsNameTitle#Имя:
+RumorsDataTitle#Текст:
+EventsSectionTitle#===== События =====
+EventNameTitle#Имя:
+EventMessageTitle#Сообщение:
+HeroesSectionTitle#===== Герои =====
+HeroesBiographyTitle#Биография:
+HeroesNameTitle#Имя:
+ObjectsSectionTitle#===== Объекты =====
+TownNameTitle#Имя:
+TownExistStartHero#Посещение
+TownEventsTitle#События:
+TownEventNameTitle#Имя:
+TownEventMessageTitle#Сообщение:
+MapObjectMessageTitle#Сообщение:
+HeroesInPrisonNameTitle#Имя:
+HeroesInPrisonBiographyTitle#Биография:
+EndOfFileTitle#===== Конец файла =====
+TownNameCastle#Замок
+TownNameNecropolis#Некрополис
+TownNameRampart#Оплот
+TownNameDungeon#Темница
+TownNameTower#Башня
+TownNameInferno#Инферно
+TownNameFortress#Крепость
+TownNameStronghold#Цитадель
+TownNameConflux#Сопряжение
+MapObjectPrison#Тюрьма
