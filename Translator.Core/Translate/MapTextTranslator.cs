@@ -10,7 +10,7 @@ namespace Translator.Core.Translate
         {
             var translatedText = sourceText.CreateCopy();
 
-            translatedText.Name.Data = translator.Translate(sourceText.Name.Data);
+            // translatedText.Name.Data = translator.Translate(sourceText.Name.Data);
 
             translatedText.Description.Data = translator.Translate(sourceText.Description.Data);
 

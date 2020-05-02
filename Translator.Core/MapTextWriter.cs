@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Translator.Core.Domain;
 
 namespace Translator.Core
@@ -42,7 +41,7 @@ namespace Translator.Core
                 if (hero.Name != null)
                 {
                     ++i; // name
-                    lines[i++] = hero.Name.Data;                    
+                    lines[i++] = hero.Name.Data;
                 }
 
                 if (hero.Biography != null)
@@ -82,7 +81,7 @@ namespace Translator.Core
                             if (town.VisitedHero.Name != null)
                             {
                                 ++i; // name
-                                lines[i++] = town.VisitedHero.Name.Data;                                
+                                lines[i++] = town.VisitedHero.Name.Data;
                             }
 
                             if (town.VisitedHero.Biography != null)
@@ -118,13 +117,13 @@ namespace Translator.Core
                         if (hero.Name != null)
                         {
                             ++i; // name
-                            lines[i++] = hero.Name.Data;                            
+                            lines[i++] = hero.Name.Data;
                         }
 
                         if (hero.Biography != null)
                         {
                             ++i; // bio
-                            lines[i++] = hero.Biography.Data;                            
+                            lines[i++] = hero.Biography.Data;
                         }
 
                         ++i; // empty line
@@ -147,7 +146,7 @@ namespace Translator.Core
                         throw new ArgumentException($"Bad type: {item.GetType()}");
                 }
             }
-            
+
             return lines;
         }
     }

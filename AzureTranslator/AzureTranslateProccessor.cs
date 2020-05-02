@@ -38,7 +38,7 @@ namespace AzureTranslator
             this.getLanguagesUrl = new Uri(endpoint + "/languages?api-version=3.0&scope=translation");
             this.transleteUrlPattern = endpoint + "/translate?api-version=3.0&to={0}";
 
-            Task.Factory.StartNew(async () => await this.Initialize());
+            Initialize();
         }
 
         public override string TargetLangugage
@@ -51,9 +51,7 @@ namespace AzureTranslator
                 this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, value));
             }
         }
-
-        public int TranslatedSymbolCount { get; set; }
-
+        
         public IEnumerable<string> GetLanguages() => this.languageMap.Keys;
 
         public bool SetTargetLanguage(string nativeLanguageName)
@@ -97,7 +95,7 @@ namespace AzureTranslator
             }
         }
 
-        private async Task Initialize()
+        private void Initialize()
         {
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage())
@@ -107,8 +105,8 @@ namespace AzureTranslator
                 request.Headers.Add("Ocp-Apim-Subscription-Key", this.key);
                 request.Headers.Add("Accept-Language", "en");
 
-                var response = await client.SendAsync(request).ConfigureAwait(false);
-                var jsonStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                var response = client.SendAsync(request).Result;
+                var jsonStream = response.Content.ReadAsStreamAsync().Result;
 
                 using (var reader = new StreamReader(jsonStream, UnicodeEncoding.UTF8))
                 {

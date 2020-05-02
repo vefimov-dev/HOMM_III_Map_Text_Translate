@@ -81,11 +81,6 @@ namespace Translator.Core
                 var title = lines[currentLine];
                 Tuple<string, string> nb;
 
-                if (currentLine > 811)
-                {
-                    var d = 44;
-                }
-
                 switch (GetObjectType(lines, currentLine))
                 {
                     case ObjectType.Town:
@@ -183,6 +178,178 @@ namespace Translator.Core
             return mt;
         }
 
+        public static MapText ParseMap(string[] lines, string[] valueLines)
+        {
+            var mt = new MapText();
+
+            mt.Name.Data = valueLines[1];
+            mt.Description.Data = valueLines[4];
+
+            var currentLine = 8; // rummors start
+            int eventStartLine, heroesStartline, objectsStartLine, endFile = 0;
+
+            eventStartLine = FindIndex(lines, currentLine + 2, x => x.IsOrdinalEqualsIgnoreCase(TitleNames.EventsSectionTitle));
+            heroesStartline = FindIndex(lines, eventStartLine + 2, x => x.IsOrdinalEqualsIgnoreCase(TitleNames.HeroesSectionTitle));
+            objectsStartLine = FindIndex(lines, heroesStartline + 2, x => x.IsOrdinalEqualsIgnoreCase(TitleNames.ObjectsSectionTitle));
+
+            for (int i = lines.Length - 1; i > 0; --i)
+            {
+                if (lines[i].IsOrdinalEqualsIgnoreCase(TitleNames.EndOfFileTitle))
+                {
+                    endFile = i;
+                    break;
+                }
+            }
+
+            // parse rummors
+            while (currentLine < eventStartLine)
+            {
+                ++currentLine; // to name data
+
+                var name = valueLines[currentLine];
+
+                currentLine += 2; // to data 
+
+                var data = valueLines[currentLine];
+
+                currentLine += 2; // next rummor
+
+                var rummor = new RumorsNode(name, data);
+                mt.RumorsCollection.Add(rummor);
+            }
+
+            // parse events
+            currentLine += 2;
+            while (currentLine < heroesStartline)
+            {
+                ++currentLine; // to name data
+
+                var name = valueLines[currentLine];
+
+                currentLine += 2; // to data 
+
+                var message = valueLines[currentLine];
+
+                currentLine += 2; // next rummor
+
+                var eventNode = new EventNode(name, message);
+                mt.EventsCollection.Add(eventNode);
+            }
+
+            // parse heroes
+            currentLine += 2;
+            while (currentLine < objectsStartLine)
+            {
+                var nb = GetHeroNameAndBio(lines, valueLines, ref currentLine);
+                var hero = new HeroesNode(nb.Item1, nb.Item2);
+                mt.HeroesCollection.Add(hero);
+            }
+
+            // parse objects
+            currentLine += 2;
+
+            while (currentLine < endFile)
+            {
+                var title = lines[currentLine];
+                Tuple<string, string> nb;
+
+                switch (GetObjectType(lines, currentLine))
+                {
+                    case ObjectType.Town:
+                        string townName = null;
+                        ++currentLine;
+
+                        if (lines[currentLine].IsOrdinalEqualsIgnoreCase(TitleNames.TownNameTitle))
+                        {
+                            ++currentLine;
+                            townName = valueLines[currentLine];
+                            currentLine += 2;
+                        }
+                        else
+                        {
+                            ++currentLine;
+                        }
+
+                        var townNode = new TownNode(title, townName);
+
+                        if (lines[currentLine].ContainsOrdinalIgnoreCase(TitleNames.TownExistStartHero))
+                        {
+                            title = lines[currentLine];
+                            ++currentLine;
+                            nb = GetHeroNameAndBio(lines, valueLines, ref currentLine);
+
+                            townNode.VisitedHero = new TownStartHeroesNode(title, nb.Item1, nb.Item2);
+                        }
+
+                        if (lines[currentLine].IsOrdinalEqualsIgnoreCase(TitleNames.TownEventsTitle))
+                        {
+                            currentLine += 2;
+                            string en = null, em = null;
+                            while (true)
+                            {
+                                if (lines[currentLine].IsOrdinalEqualsIgnoreCase(TitleNames.TownEventNameTitle))
+                                {
+                                    ++currentLine;
+                                    en = valueLines[currentLine];
+
+                                    currentLine += 2;
+                                    em = valueLines[currentLine];
+
+                                    townNode.TownEvents.Add(new TownEventNode(en, em));
+                                    currentLine += 2;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        mt.ObjectsCollection.Add(townNode);
+
+                        break;
+
+                    case ObjectType.Hero:
+                        ++currentLine;
+                        nb = GetHeroNameAndBio(lines, valueLines, ref currentLine);
+
+                        var prison = new HeroesInPrisonNode(title, nb.Item1, nb.Item2);
+                        mt.ObjectsCollection.Add(prison);
+                        break;
+
+                    case ObjectType.Message:
+                        currentLine += 2;
+
+                        var endMessage = 0;
+                        var mom = new MapObjectMessageNode(title);
+                        for (int i = currentLine; i < lines.Length; ++i)
+                        {
+                            if ((lines[i].StartsWithOrdinalIgnoreCase("(") && lines[i].EndsWithOrdinalIgnoreCase("***"))
+                                || lines[i].StartsWithOrdinalIgnoreCase("="))
+                            {
+                                endMessage = i - 1;
+                                break;
+                            }
+                        }
+
+                        for (int i = currentLine; i < endMessage; ++i)
+                        {
+                            mom.Messages.Add(valueLines[i]);
+                            ++currentLine;
+                        }
+
+                        ++currentLine;
+                        mt.ObjectsCollection.Add(mom);
+                        break;
+
+                    default:
+                        throw new ArgumentException("Bad ObjectType");
+                }
+            }
+
+            return mt;
+        }
+
         private static int FindIndex(string[] lines, int startIndex, Predicate<string> predicate)
         {
             for (int i = startIndex; i < lines.Length; ++i)
@@ -245,12 +412,18 @@ namespace Translator.Core
                 name = lines[index];
 
                 ++index;
-                // also has bio
+                
                 if (TitleNames.HeroesBiographyTitle.IsOrdinalEqualsIgnoreCase(lines[index]))
                 {
+                    // also has bio
                     ++index;
 
+                    // Use "..." as bio if hero has bio without any symbol
                     bio = lines[index];
+                    if (string.IsNullOrEmpty(bio))
+                    {
+                        bio = "...";
+                    }
 
                     index += 2;
                 }
@@ -267,7 +440,64 @@ namespace Translator.Core
                 // has bio
                 ++index;
 
+                // Use "..." as bio if hero has bio without any symbol
                 bio = lines[index];
+                if (string.IsNullOrEmpty(bio))
+                {
+                    bio = "...";
+                }
+
+                index += 2;
+            }
+
+            return new Tuple<string, string>(name, bio);
+        }
+
+        private static Tuple<string, string> GetHeroNameAndBio(string[] lines, string[] valueLines, ref int index)
+        {
+            string name = null, bio = null;
+
+            if (TitleNames.HeroesNameTitle.IsOrdinalEqualsIgnoreCase(lines[index]))
+            {
+                // has name
+                ++index;
+                name = valueLines[index];
+
+                ++index;
+
+                if (TitleNames.HeroesBiographyTitle.IsOrdinalEqualsIgnoreCase(lines[index]))
+                {
+                    // also has bio
+                    ++index;
+
+                    // Use "..." as bio if hero has bio without any symbol
+                    bio = valueLines[index];
+                    if (string.IsNullOrEmpty(bio))
+                    {
+                        bio = "...";
+                    }
+
+                    index += 2;
+                }
+                else
+                {
+                    ++index;
+                }
+
+                return new Tuple<string, string>(name, bio);
+            }
+
+            if (TitleNames.HeroesBiographyTitle.IsOrdinalEqualsIgnoreCase(lines[index]))
+            {
+                // has bio
+                ++index;
+
+                // Use "..." as bio if hero has bio without any symbol
+                bio = valueLines[index];
+                if (string.IsNullOrEmpty(bio))
+                {
+                    bio = "...";
+                }
 
                 index += 2;
             }

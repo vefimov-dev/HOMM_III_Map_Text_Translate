@@ -13,6 +13,8 @@ namespace Translator.Core.Translate
         public string SourceLangugage { get; set; }
         public virtual string TargetLangugage { get; set; }
 
+        public int TranslatedSymbolCount { get; set; }
+
         public Dictionary<string, string> TranslationErrors { get; } = new Dictionary<string, string>();
 
         public string Translate(string data)
@@ -45,7 +47,7 @@ namespace Translator.Core.Translate
                 lines.Add(data.Substring(start, end - start));
                 index = start = end;
 
-                while (data[index] == NewTextLineChar && index < data.Length)
+                while (index < data.Length && data[index] == NewTextLineChar)
                 {
                     ++index;
                 }
