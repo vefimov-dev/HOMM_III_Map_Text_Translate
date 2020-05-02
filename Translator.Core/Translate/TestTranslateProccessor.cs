@@ -1,8 +1,10 @@
-﻿namespace Translator.Core.Translate
+﻿using System.Collections.Generic;
+
+namespace Translator.Core.Translate
 {
-    public class TestTranslateProccessor : ITranslateProccessor
+    public class TestTranslateProccessor : TranslateProccessor
     {
-        public string Translate(string data)
+        protected override string MakeTranslation(string data)
         {
             return data;
         }

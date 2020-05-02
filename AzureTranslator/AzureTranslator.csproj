@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E3E9F43C-275F-4FDE-A7FB-CBD0EF27C6C7}</ProjectGuid>
+    <ProjectGuid>{B406483A-2B9C-420C-AE5E-DBAA451988DE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Translator.Core</RootNamespace>
-    <AssemblyName>Translator.Core</AssemblyName>
+    <RootNamespace>AzureTranslator</RootNamespace>
+    <AssemblyName>AzureTranslator</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,34 +31,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\EventNode.cs" />
-    <Compile Include="Domain\HeroesInPrisonNode.cs" />
-    <Compile Include="Domain\HeroesNode.cs" />
-    <Compile Include="Domain\MapObjectMessageNode.cs" />
-    <Compile Include="Domain\MapText.cs" />
-    <Compile Include="Domain\ObjectNodeBase.cs" />
-    <Compile Include="Domain\RumorsNode.cs" />
-    <Compile Include="Domain\TextNode.cs" />
-    <Compile Include="Domain\TitleNames.cs" />
-    <Compile Include="Domain\TownNode.cs" />
-    <Compile Include="MapTextParser.cs" />
-    <Compile Include="MapTextWriter.cs" />
+    <Compile Include="AzureTranslateProccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Translate\MapTextTranslator.cs" />
-    <Compile Include="Translate\TestTranslateProccessor.cs" />
-    <Compile Include="Translate\TranslateProccessor.cs" />
-    <Compile Include="Utility\BinarySerializer.cs" />
-    <Compile Include="Utility\StringExtentions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Translator.Core\Translator.Core.csproj">
+      <Project>{E3E9F43C-275F-4FDE-A7FB-CBD0EF27C6C7}</Project>
+      <Name>Translator.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

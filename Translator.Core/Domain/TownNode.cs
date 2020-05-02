@@ -49,6 +49,7 @@ namespace Translator.Core.Domain
         }
     }
 
+    [System.Serializable]
     public class TownEventNode
     {
         public TextNode Name { get; set; }

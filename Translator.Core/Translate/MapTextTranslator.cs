@@ -6,7 +6,7 @@ namespace Translator.Core.Translate
 {
     public static class MapTextTranslator
     {
-        public static MapText Translate(MapText sourceText, ITranslateProccessor translator)
+        public static MapText Translate(MapText sourceText, TranslateProccessor translator)
         {
             var translatedText = sourceText.CreateCopy();
 
@@ -108,5 +108,5 @@ namespace Translator.Core.Translate
 
             return translatedText;
         }
-    }
+    }    
 }
