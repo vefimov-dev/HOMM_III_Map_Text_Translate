@@ -36,7 +36,7 @@ namespace ConsoleTest
 
             //var ct = new CheckMapTranslateProccessor { MaxLengthForStringWithoutWarning = 4000 };
 
-            //var tt = MapTextTranslator.Translate(cmt, ct);
+            //var tt = MultithreadMapTextTranslator.Translate(cmt, ct);
 
             //var write = MapTextWriter.WriteMapText(tt, lines);
 
@@ -57,17 +57,31 @@ namespace ConsoleTest
 
             #region Translate
 
-            //var mt = MapTextParser.ParseMap(lines, valueLines);
+            var mt = MapTextParser.ParseMap(lines, valueLines);
 
-            //var pathToCred = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
-            //var cred = File.ReadAllLines(pathToCred);
-            //var at = new AzureTranslateProccessor(cred[0], cred[1], cred.Length > 2 ? cred[2] : null) { TargetLangugage = "ru" };
+            var pathToCred = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
+            var cred = File.ReadAllLines(pathToCred);
+            var at = new AzureTranslateProccessor(cred[0], cred[1], cred.Length > 2 ? cred[2] : null) { TargetLangugage = "ru" };
 
-            //var tt = MapTextTranslator.Translate(mt, at);
+            var start = DateTime.Now;
+            var tt = MultithreadMapTextTranslator.Translate(mt, at);
 
-            //var write = MapTextWriter.WriteMapText(tt, lines);
+            var end = DateTime.Now;
 
-            //File.WriteAllLines($"RU_{pathToText}", write, Encoding.Default);
+            var write = MapTextWriter.WriteMapText(tt, lines);
+
+            File.WriteAllLines($"RU_{pathToText}", write, Encoding.Default);
+
+            var checkInfo = new List<string>();
+
+            checkInfo.Add($"Translation time: {(end - start).TotalSeconds} seconds");
+
+            foreach (var s in at.TranslationErrors)
+            {
+                checkInfo.Add($"{s.Message} {s.TranslationData}");
+            }
+
+            File.WriteAllLines($"Info_{pathToText}", checkInfo, Encoding.Default);
 
             #endregion
 

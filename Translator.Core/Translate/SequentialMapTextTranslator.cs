@@ -1,10 +1,9 @@
-﻿using System;
-using Translator.Core.Domain;
+﻿using Translator.Core.Domain;
 using Translator.Core.Utility;
 
 namespace Translator.Core.Translate
 {
-    public static class MapTextTranslator
+    public static class SequentialMapTextTranslator
     {
         public static MapText Translate(MapText sourceText, TranslateProccessor translator)
         {
@@ -100,13 +99,10 @@ namespace Translator.Core.Translate
                         }
 
                         break;
-
-                    default:
-                        throw new ArgumentException($"Bad type: {sourceText.ObjectsCollection[i].GetType()}");
                 }
             }
 
             return translatedText;
         }
-    }    
+    }
 }
