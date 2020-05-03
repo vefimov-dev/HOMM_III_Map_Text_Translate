@@ -9,14 +9,14 @@ namespace Translator.Core.Translate
         private const string NewTextLine = "\t";
         private const char NewTextLineChar = '\t';
 
-        public string SourceLangugage { get; set; }
+        public virtual string SourceLangugage { get; set; }
         public virtual string TargetLangugage { get; set; }
 
         public int TranslatedSymbolCount { get; set; }
 
         public int TranslationRequestsCount { get; protected set; }
 
-        public Dictionary<string, string> TranslationErrors { get; } = new Dictionary<string, string>();
+        public List<TranslationErrorInfo> TranslationErrors { get; } = new List<TranslationErrorInfo>();
 
         public virtual string Translate(string data)
         {
@@ -71,5 +71,12 @@ namespace Translator.Core.Translate
             return sb.ToString();
         }
 
+    }
+
+    public class TranslationErrorInfo
+    {
+        public string Message { get; set; }
+
+        public string TranslationData { get; set; }
     }
 }

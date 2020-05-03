@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Translator.Core.Translate;
@@ -12,6 +11,9 @@ namespace AzureTranslator
 {
     public class AzureTranslateProccessor : TranslateProccessor
     {
+        private const int MaxStringLengthForTranslation = 4995;
+        private const int AttemptsCount = 3;
+
         private readonly string endpoint;
         private readonly string key;
         private readonly string region;
@@ -38,7 +40,16 @@ namespace AzureTranslator
             this.getLanguagesUrl = new Uri(endpoint + "/languages?api-version=3.0&scope=translation");
             this.transleteUrlPattern = endpoint + "/translate?api-version=3.0&to={0}";
 
-            Initialize();
+            this.Initialize();
+        }
+
+        public override string SourceLangugage
+        {
+            get => base.SourceLangugage;
+            set
+            {
+                throw new NotSupportedException();
+            }
         }
 
         public override string TargetLangugage
@@ -51,7 +62,7 @@ namespace AzureTranslator
                 this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, value));
             }
         }
-        
+
         public IEnumerable<string> GetLanguages() => this.languageMap.Keys;
 
         public bool SetTargetLanguage(string nativeLanguageName)
@@ -67,32 +78,35 @@ namespace AzureTranslator
 
         protected override string MakeTranslation(string data)
         {
+            if (data.Length > MaxStringLengthForTranslation)
+            {
+                this.TranslationErrors.Add(new TranslationErrorInfo { Message = "Oversized string", TranslationData = data });
+                data = data.Substring(0, MaxStringLengthForTranslation);
+            }
+
             var body = new[] { new { Text = data } };
             var requestBody = JsonConvert.SerializeObject(body);
+            var attempt = 0;
+            string translation = data;
 
-            using (var client = new HttpClient())
-            using (var request = new HttpRequestMessage())
+            while (attempt < AttemptsCount)
             {
-                request.Method = HttpMethod.Post;
-                request.RequestUri = this.transleteUrl;
-                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                request.Headers.Add("Ocp-Apim-Subscription-Key", this.key);
-                if (!string.IsNullOrEmpty(this.region))
+                try
                 {
-                    request.Headers.Add("Ocp-Apim-Subscription-Region", this.region);
+                    translation = this.GetTranslation(requestBody);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    this.TranslationErrors.Add(new TranslationErrorInfo { Message = $"{ex.Message}, attempt: {attempt}", TranslationData = data });
                 }
 
-                var response = client.SendAsync(request).Result;
-                var responseBody = response.Content.ReadAsStringAsync().Result;
-
-                JArray jaresult;
-                jaresult = JArray.Parse(responseBody);
-
-                var translation = (string)jaresult[0].SelectToken("translations[0].text");
-
-                this.TranslatedSymbolCount += data.Length;
-                return translation;
+                ++attempt;
             }
+
+            this.TranslatedSymbolCount += data.Length;
+
+            return translation;
         }
 
         private void Initialize()
@@ -118,6 +132,32 @@ namespace AzureTranslator
                         this.languageMap[item.Value["nativeName"]] = item.Key;
                     }
                 }
+            }
+        }
+
+        private string GetTranslation(string requestBody)
+        {
+            using (var client = new HttpClient())
+            using (var request = new HttpRequestMessage())
+            {
+                request.Method = HttpMethod.Post;
+                request.RequestUri = this.transleteUrl;
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                request.Headers.Add("Ocp-Apim-Subscription-Key", this.key);
+                if (!string.IsNullOrEmpty(this.region))
+                {
+                    request.Headers.Add("Ocp-Apim-Subscription-Region", this.region);
+                }
+
+                var response = client.SendAsync(request).Result;
+                var responseBody = response.Content.ReadAsStringAsync().Result;
+
+                JArray jaresult;
+                jaresult = JArray.Parse(responseBody);
+
+                var translation = (string)jaresult[0].SelectToken("translations[0].text");
+
+                return translation;
             }
         }
     }
