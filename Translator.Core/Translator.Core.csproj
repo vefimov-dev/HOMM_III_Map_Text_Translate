@@ -53,8 +53,8 @@
     <Compile Include="MapTextParser.cs" />
     <Compile Include="MapTextWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Translate\CheckMapTranslateProccessor.cs" />
     <Compile Include="Translate\MapTextTranslator.cs" />
-    <Compile Include="Translate\TestTranslateProccessor.cs" />
     <Compile Include="Translate\TranslateProccessor.cs" />
     <Compile Include="Utility\BinarySerializer.cs" />
     <Compile Include="Utility\StringExtentions.cs" />

@@ -17,7 +17,7 @@ namespace Translator.Core.Translate
 
         public Dictionary<string, string> TranslationErrors { get; } = new Dictionary<string, string>();
 
-        public string Translate(string data)
+        public virtual string Translate(string data)
         {            
             if (data.ContainsOrdinalIgnoreCase(NewTextLine))
             {
