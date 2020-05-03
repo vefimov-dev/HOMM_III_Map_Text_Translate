@@ -22,7 +22,9 @@ namespace Translator.Core.Translate
 
         protected override string MakeTranslation(string data)
         {
+            ++this.TranslationRequestsCount;
             this.TranslatedSymbolCount += data.Length;
+
             return data;
         }
     }

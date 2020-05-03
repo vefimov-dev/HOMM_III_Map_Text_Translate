@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Translator.Core.Utility;
 
@@ -15,10 +14,12 @@ namespace Translator.Core.Translate
 
         public int TranslatedSymbolCount { get; set; }
 
+        public int TranslationRequestsCount { get; protected set; }
+
         public Dictionary<string, string> TranslationErrors { get; } = new Dictionary<string, string>();
 
         public virtual string Translate(string data)
-        {            
+        {
             if (data.ContainsOrdinalIgnoreCase(NewTextLine))
             {
                 return this.TraslateByLine(data);
