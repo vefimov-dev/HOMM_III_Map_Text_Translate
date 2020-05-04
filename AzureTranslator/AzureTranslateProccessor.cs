@@ -48,7 +48,8 @@ namespace AzureTranslator
             get => base.SourceLangugage;
             set
             {
-                throw new NotSupportedException();
+                base.SourceLangugage = value;
+                this.SetTransaltionUrl();
             }
         }
 
@@ -59,17 +60,35 @@ namespace AzureTranslator
             set
             {
                 base.TargetLangugage = value;
-                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, value));
+                this.SetTransaltionUrl();
+
             }
         }
 
         public IEnumerable<string> GetLanguages() => this.languageMap.Keys;
 
-        public bool SetTargetLanguage(string nativeLanguageName)
+        public bool SetTargetLanguage(string name)
         {
-            if (this.languageMap.ContainsKey(nativeLanguageName))
+            if (this.languageMap.ContainsKey(name))
             {
-                this.TargetLangugage = this.languageMap[nativeLanguageName];
+                this.TargetLangugage = this.languageMap[name];
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool SetSourceLangugage(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                this.SourceLangugage = null;
+                return true;
+            }
+
+            if (this.languageMap.ContainsKey(name))
+            {
+                this.SourceLangugage = this.languageMap[name];
                 return true;
             }
 
@@ -129,7 +148,7 @@ namespace AzureTranslator
 
                     foreach (var item in languages)
                     {
-                        this.languageMap[item.Value["nativeName"]] = item.Key;
+                        this.languageMap[item.Value["name"]] = item.Key;
                     }
                 }
             }
@@ -158,6 +177,19 @@ namespace AzureTranslator
                 var translation = (string)jaresult[0].SelectToken("translations[0].text");
 
                 return translation;
+            }
+        }
+
+        private void SetTransaltionUrl()
+        {
+            if (string.IsNullOrEmpty(this.SourceLangugage))
+            {
+                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, this.transleteUrlPattern));
+            }
+            else
+            {
+                this.transleteUrl = new Uri(
+                    $"{ string.Format(this.transleteUrlPattern, this.TargetLangugage) }&from={this.SourceLangugage}");
             }
         }
     }
