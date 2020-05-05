@@ -24,14 +24,14 @@ namespace ConsoleTest
 
             TitleNames.Initialize(eliData);
 
-            var pathToText = "Paragon.txt";
+            var pathToText = "Way Home.txt";
             var valueLinesEncoding = Encoding.GetEncoding("Windows-1251");
            //var valueLinesEncoding = Encoding.GetEncoding("GB2312");
 
             var lines = File.ReadAllLines(pathToText, Encoding.Default);
             var valueLines = File.ReadAllLines(pathToText, valueLinesEncoding);
 
-            var k = 11;
+            var k = 1;
             if (k == 1)
             {
                 #region CheckMapText
