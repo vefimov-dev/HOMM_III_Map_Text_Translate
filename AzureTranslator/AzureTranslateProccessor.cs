@@ -185,7 +185,7 @@ namespace AzureTranslator
         {
             if (string.IsNullOrEmpty(this.SourceLangugage))
             {
-                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, this.transleteUrlPattern));
+                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, this.TargetLangugage));
             }
             else
             {

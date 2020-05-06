@@ -15,9 +15,14 @@ namespace Translator.Core.Translate
         {
             this.nextTranslateProcessor = nextTranslateProcessor;
         }
-
+        string t = "Его младший брат слишко легко попадал под влияние сильных фигур";
         public string Translate(string data)
         {
+            if (data.ContainsOrdinalIgnoreCase(t))
+            {
+                var f = 5;
+            }
+
             if (data.ContainsOrdinalIgnoreCase(NewTextLine))
             {
                 return this.CombineLines(data);
