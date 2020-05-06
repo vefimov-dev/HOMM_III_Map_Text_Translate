@@ -24,14 +24,14 @@ namespace ConsoleTest
 
             TitleNames.Initialize(eliData);
 
-            var pathToText = "Way Home.txt";
-            var valueLinesEncoding = Encoding.GetEncoding("Windows-1251");
-           //var valueLinesEncoding = Encoding.GetEncoding("GB2312");
+            var pathToText = "xiedu.txt";
+            //var valueLinesEncoding = Encoding.GetEncoding("Windows-1251");
+           var valueLinesEncoding = Encoding.GetEncoding("GB2312");
 
             var lines = File.ReadAllLines(pathToText, Encoding.Default);
             var valueLines = File.ReadAllLines(pathToText, valueLinesEncoding);
 
-            var k = 1;
+            var k = 11;
             if (k == 1)
             {
                 #region CheckMapText
@@ -69,9 +69,11 @@ namespace ConsoleTest
                 var cred = File.ReadAllLines(pathToCred);
                 var at = new AzureTranslateProccessor(cred[0], cred[1], cred.Length > 2 ? cred[2] : null)
                 { TargetLangugage = "ru", };
+                var clt = new CombineLinesTranslateProcessor(at);
+                var csrt = new CustomSymbolsRemoveTranslateProccessor(new[] { "{", "}" }, clt);
 
                 var start = DateTime.Now;
-                var tt = MultithreadMapTextTranslator.Translate(mt, at);
+                var tt = MultithreadMapTextTranslator.Translate(mt, csrt);
 
                 var end = DateTime.Now;
 

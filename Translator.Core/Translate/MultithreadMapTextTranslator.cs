@@ -12,7 +12,7 @@ namespace Translator.Core.Translate
     {
         private const int MapObjectsPerWorker = 50;
 
-        public static MapText Translate(MapText sourceText, TranslateProccessor translator)
+        public static MapText Translate(MapText sourceText, ITranslateProccessor translator)
         {
             var translatedText = sourceText.CreateCopy();
             var tasks = new List<Task>();
@@ -88,7 +88,7 @@ namespace Translator.Core.Translate
         }
 
         private static void TranslateMapObjects(List<ObjectNodeBase> translatedMapObjectCollection,
-            TranslateProccessor translator, List<ObjectNodeBase> mapObjectCollection, int fromIndex, int toIndex)
+            ITranslateProccessor translator, List<ObjectNodeBase> mapObjectCollection, int fromIndex, int toIndex)
         {
             for (int i = fromIndex; i < toIndex; ++i)
             {

@@ -5,7 +5,7 @@ namespace Translator.Core.Translate
 {
     public static class SequentialMapTextTranslator
     {
-        public static MapText Translate(MapText sourceText, TranslateProccessor translator)
+        public static MapText Translate(MapText sourceText, ITranslateProccessor translator)
         {
             var translatedText = sourceText.CreateCopy();
 

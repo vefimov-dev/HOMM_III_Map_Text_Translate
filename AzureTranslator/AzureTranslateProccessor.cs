@@ -9,7 +9,7 @@ using Translator.Core.Translate;
 
 namespace AzureTranslator
 {
-    public class AzureTranslateProccessor : TranslateProccessor
+    public class AzureTranslateProccessor : ITranslateProccessor
     {
         private const int MaxStringLengthForTranslation = 4995;
         private const int AttemptsCount = 3;
@@ -25,6 +25,8 @@ namespace AzureTranslator
         private readonly Dictionary<string, string> languageMap = new Dictionary<string, string>();
 
         private Uri transleteUrl;
+        private string sourceLangugage;
+        private string targetLangugage;
 
         public AzureTranslateProccessor(string endpoint, string key, string region)
         {
@@ -43,25 +45,26 @@ namespace AzureTranslator
             this.Initialize();
         }
 
-        public override string SourceLangugage
+        public List<TranslationErrorInfo> TranslationErrors { get; } = new List<TranslationErrorInfo>();
+
+        public string SourceLangugage
         {
-            get => base.SourceLangugage;
+            get => this.sourceLangugage;
             set
             {
-                base.SourceLangugage = value;
+                this.sourceLangugage = value;
                 this.SetTransaltionUrl();
             }
         }
 
-        public override string TargetLangugage
+        public string TargetLangugage
         {
-            get => base.TargetLangugage;
+            get => this.targetLangugage;
 
             set
             {
-                base.TargetLangugage = value;
+                this.targetLangugage = value;
                 this.SetTransaltionUrl();
-
             }
         }
 
@@ -95,7 +98,7 @@ namespace AzureTranslator
             return false;
         }
 
-        protected override string MakeTranslation(string data)
+        public string Translate(string data)
         {
             if (data.Length > MaxStringLengthForTranslation)
             {
@@ -122,9 +125,7 @@ namespace AzureTranslator
 
                 ++attempt;
             }
-
-            this.TranslatedSymbolCount += data.Length;
-
+            
             return translation;
         }
 
@@ -191,6 +192,13 @@ namespace AzureTranslator
                 this.transleteUrl = new Uri(
                     $"{ string.Format(this.transleteUrlPattern, this.TargetLangugage) }&from={this.SourceLangugage}");
             }
-        }
+        }       
+    }
+
+    public class TranslationErrorInfo
+    {
+        public string Message { get; set; }
+
+        public string TranslationData { get; set; }
     }
 }
