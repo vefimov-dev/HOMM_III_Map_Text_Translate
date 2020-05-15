@@ -8,7 +8,7 @@ using Translator.Core.Domain;
 using Translator.Core.Translate;
 
 namespace ConsoleTest
-{
+{   
     internal class Program
     {
         private static void Main(string[] args)
@@ -31,17 +31,16 @@ namespace ConsoleTest
             var lines = File.ReadAllLines(pathToText, Encoding.Default);
             var valueLines = File.ReadAllLines(pathToText, valueLinesEncoding);
 
-            //var t = "Наконец пришел ответ от узурпатора. Могрейну стоило огромного труда унять дрожь в руках, когда он разворачивал свиток. Гонцу, доставившему его явно было известно о содержании послания и потому он мерзко ухмылялся.	Могрейн, сколько я себя помню, ты не отличался терпением и благоразумием.Еще когда я учил тебя тактике и стратегии, нападение было для тебя предпочтительней защиты.Но сейчас тебе стоит одуматься, ибо трон Империи мой. С каждым днем под мои знамена становятся новые воины, отступников вроде твоего брата и наемника Хааса в расчет просто не стоит брать.Явись на собрание лордов, что будет через два месяца, присягни на верность, и я не только пощажу твою жизнь, но и оставлю правителем Стоунхелма. Если же ты не прекратишь бессмысленную борьбу, то на тебя обрушится мощь всех лордов Империи, что объединятся под моим началом!	Могрейн скомкал послание и бросил в огонь.	У него оставалось ДВА месяца на то, чтобы отбить Вирилл, столицу Империи у Фордрагона.";
+            //var t = "Наконец пришел ответ от узурпатора. Могрейну стоило огромного труда унять дрожь в руках, когда он разворачивал свиток. Гонцу, доставившему его явно было известно о содержании послания и потому он мерзко ухмылялся. \"Могрейн, сколько я себя помню, ты не отличался терпением и благоразумием.Еще когда я учил тебя тактике и стратегии, нападение было для тебя предпочтительней защиты.Но сейчас тебе стоит одуматься, ибо трон Империи мой. С каждым днем под мои знамена становятся новые воины, отступников вроде твоего брата и наемника Хааса в расчет просто не стоит брать.Явись на собрание лордов, что будет через два месяца, присягни на верность, и я не только пощажу твою жизнь, но и оставлю правителем Стоунхелма. Если же ты не прекратишь бессмысленную борьбу, то на тебя обрушится мощь всех лордов Империи, что объединятся под моим началом!\" Могрейн скомкал послание и бросил в огонь. У него оставалось ДВА месяца на то, чтобы отбить Вирилл, столицу Империи у Фордрагона.";
 
             //var pathToCred1 = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
             //var cred1 = File.ReadAllLines(pathToCred1);
             //var at1 = new AzureTranslateProccessor(cred1[0], cred1[1], cred1.Length > 2 ? cred1[2] : null)
-            //{ TargetLangugage = "en", SourceLangugage = "ru" };
-            //var ttt = new CheckMapTranslateProccessor();
-            //var hhhh = new CombineLinesTranslateProcessor(at1);
-            //var yyyyy = new CustomSymbolsRemoveTranslateProccessor(new[] { "{", "}" }, hhhh);
+            //{ TargetLangugage = "en" };
+            //var pre = new AzurePrepareTextTranslateProccessor(at1);
+            //var hhhh = new CombineLinesTranslateProcessor(pre);            
 
-            //var t2 = yyyyy.Translate(t);
+            //var t2 = hhhh.Translate(t);
 
             //return;
 
@@ -87,8 +86,8 @@ namespace ConsoleTest
                // var csrt = new CustomSymbolsRemoveTranslateProccessor(new[] { "{", "}" }, clt);
 
                 var start = DateTime.Now;
-                var tt = MultithreadMapTextTranslator.Translate(mt, clt);
-                // var tt = SequentialMapTextTranslator.Translate(mt, csrt);
+                //var tt = MultithreadMapTextTranslator.Translate(mt, at);
+                 var tt = SequentialMapTextTranslator.Translate(mt, clt);
 
                 var end = DateTime.Now;
 

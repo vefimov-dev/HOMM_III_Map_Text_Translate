@@ -55,7 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translate\CheckMapTranslateProccessor.cs" />
     <Compile Include="Translate\CombineLinesTranslateProcessor.cs" />
-    <Compile Include="Translate\CustomSymbolsRemoveTranslateProccessor.cs" />
     <Compile Include="Translate\ITranslateProccessor.cs" />
     <Compile Include="Translate\MultithreadMapTextTranslator.cs" />
     <Compile Include="Translate\SequentialMapTextTranslator.cs" />
