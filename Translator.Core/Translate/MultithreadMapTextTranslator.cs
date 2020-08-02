@@ -17,28 +17,28 @@ namespace Translator.Core.Translate
             var translatedText = sourceText.CreateCopy();
             var tasks = new List<Task>();
 
-            var t = new Task(async () =>
+            var t = new Task(() =>
             {
                 // translatedText.Name.Data = translator.Translate(sourceText.Name.Data);
 
-                translatedText.Description.Data = await translator.Translate(sourceText.Description.Data);
+                translatedText.Description.Data = translator.Translate(sourceText.Description.Data).Result;
 
                 for (int i = 0; i < sourceText.RumorsCollection.Count; ++i)
                 {
                     translatedText.RumorsCollection[i].Name.Data =
-                         await translator.Translate(sourceText.RumorsCollection[i].Name.Data);
+                         translator.Translate(sourceText.RumorsCollection[i].Name.Data).Result;
 
                     translatedText.RumorsCollection[i].Data.Data = 
-                         await translator.Translate(sourceText.RumorsCollection[i].Data.Data);
+                          translator.Translate(sourceText.RumorsCollection[i].Data.Data).Result;
                 }
 
                 for (int i = 0; i < sourceText.EventsCollection.Count; ++i)
                 {
                     translatedText.EventsCollection[i].Name.Data =
-                         await translator.Translate(sourceText.EventsCollection[i].Name.Data);
+                          translator.Translate(sourceText.EventsCollection[i].Name.Data).Result;
 
                     translatedText.EventsCollection[i].Message.Data =
-                         await translator.Translate(sourceText.EventsCollection[i].Message.Data);
+                          translator.Translate(sourceText.EventsCollection[i].Message.Data).Result;
                 }
 
                 for (int i = 0; i < sourceText.HeroesCollection.Count; ++i)
@@ -46,13 +46,13 @@ namespace Translator.Core.Translate
                     if (sourceText.HeroesCollection[i].Name != null)
                     {
                         translatedText.HeroesCollection[i].Name.Data =
-                            await translator.Translate(sourceText.HeroesCollection[i].Name.Data);
+                             translator.Translate(sourceText.HeroesCollection[i].Name.Data).Result;
                     }
 
                     if (sourceText.HeroesCollection[i].Biography != null)
                     {
                         translatedText.HeroesCollection[i].Biography.Data =
-                            await translator.Translate(sourceText.HeroesCollection[i].Biography.Data);
+                             translator.Translate(sourceText.HeroesCollection[i].Biography.Data).Result;
                     }
                 }
 
@@ -65,19 +65,19 @@ namespace Translator.Core.Translate
             for (int i = 0; i < workersCount; ++i)
             {
                 var j = i;
-                var ot = new Task(async () =>
+                var ot = new Task(() =>
                 {
                     var k = j * MapObjectsPerWorker;
-                    await TranslateMapObjects(translatedText.ObjectsCollection, translator,
+                     TranslateMapObjects(translatedText.ObjectsCollection, translator,
                                               sourceText.ObjectsCollection, k, k + MapObjectsPerWorker);                    
                 });
 
                 tasks.Add(ot);
             }
 
-            t = new Task(async () =>
+            t = new Task(() =>
             {
-                await TranslateMapObjects(translatedText.ObjectsCollection, translator,
+                 TranslateMapObjects(translatedText.ObjectsCollection, translator,
                                           sourceText.ObjectsCollection, 
                                           workersCount * MapObjectsPerWorker, sourceText.ObjectsCollection.Count);
             });
@@ -96,7 +96,7 @@ namespace Translator.Core.Translate
             return translatedText;
         }
 
-        private static async Task TranslateMapObjects(List<ObjectNodeBase> translatedMapObjectCollection,
+        private static void TranslateMapObjects(List<ObjectNodeBase> translatedMapObjectCollection,
             TranslateProccessorBase translator, List<ObjectNodeBase> mapObjectCollection, int fromIndex, int toIndex)
         {
             for (int i = fromIndex; i < toIndex; ++i)
@@ -108,7 +108,7 @@ namespace Translator.Core.Translate
 
                         if (town.Name != null)
                         {
-                            translatedTown.Name.Data = await translator.Translate(town.Name.Data);
+                            translatedTown.Name.Data =  translator.Translate(town.Name.Data).Result;
                         }
 
                         if (town.VisitedHero != null)
@@ -116,13 +116,13 @@ namespace Translator.Core.Translate
                             if (town.VisitedHero.Name != null)
                             {
                                 translatedTown.VisitedHero.Name.Data =
-                                    await translator.Translate(town.VisitedHero.Name.Data);
+                                     translator.Translate(town.VisitedHero.Name.Data).Result;
                             }
 
                             if (town.VisitedHero.Biography != null)
                             {
                                 translatedTown.VisitedHero.Biography.Data =
-                                    await translator.Translate(town.VisitedHero.Biography.Data);
+                                     translator.Translate(town.VisitedHero.Biography.Data).Result;
                             }
                         }
 
@@ -131,10 +131,10 @@ namespace Translator.Core.Translate
                             for (int j = 0; j < town.TownEvents.Count; ++j)
                             {
                                 translatedTown.TownEvents[j].Name.Data =
-                                    await translator.Translate(town.TownEvents[j].Name.Data);
+                                     translator.Translate(town.TownEvents[j].Name.Data).Result;
 
                                 translatedTown.TownEvents[j].Message.Data =
-                                    await translator.Translate(town.TownEvents[j].Message.Data);
+                                     translator.Translate(town.TownEvents[j].Message.Data).Result;
                             }
                         }
 
@@ -145,12 +145,12 @@ namespace Translator.Core.Translate
 
                         if (hero.Name != null)
                         {
-                            translatedHero.Name.Data = await translator.Translate(hero.Name.Data);
+                            translatedHero.Name.Data =  translator.Translate(hero.Name.Data).Result;
                         }
 
                         if (hero.Biography != null)
                         {
-                            translatedHero.Biography.Data = await translator.Translate(hero.Biography.Data);
+                            translatedHero.Biography.Data =  translator.Translate(hero.Biography.Data).Result;
                         }
 
                         break;
@@ -160,7 +160,7 @@ namespace Translator.Core.Translate
 
                         for (int k = 0; k < mapObject.Messages.Count; ++k)
                         {
-                            translatedMapObject.Messages[k] = await translator.Translate(mapObject.Messages[k]);
+                            translatedMapObject.Messages[k] =  translator.Translate(mapObject.Messages[k]).Result;
                         }
 
                         break;

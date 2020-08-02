@@ -39,6 +39,11 @@ namespace GoogleTranslator
 
         public override async Task<string> Translate(string data)
         {
+            if (string.IsNullOrWhiteSpace(data))
+            {
+                return data;
+            }
+
             if (data.Length > MaxStringLengthForTranslation)
             {
                 this.TranslationErrors.Add(new TranslationErrorInfo { Message = "Oversized string", TranslationData = data });
