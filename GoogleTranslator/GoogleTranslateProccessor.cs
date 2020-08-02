@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.Translate.V3;
@@ -14,11 +15,11 @@ namespace GoogleTranslator
         private const int MaxStringLengthForTranslation = 29999;
         private const int AttemptsCount = 3;
 
+        public readonly string quotString = "&quot;";
+        public readonly string singleQuotString = "&#39;";
+        
         public readonly string credentialsPath;
         private readonly string projectId;
-
-        private string sourceLangugage;
-        private string targetLangugage;
 
         #endregion
 
@@ -35,7 +36,7 @@ namespace GoogleTranslator
 
             this.Initialize();
         }
-               
+
         public override async Task<string> Translate(string data)
         {
             if (data.Length > MaxStringLengthForTranslation)
@@ -43,7 +44,7 @@ namespace GoogleTranslator
                 this.TranslationErrors.Add(new TranslationErrorInfo { Message = "Oversized string", TranslationData = data });
                 data = data.Substring(0, MaxStringLengthForTranslation);
             }
-                        
+
             var attempt = 0;
             string translation = data;
 
@@ -74,7 +75,7 @@ namespace GoogleTranslator
         }
 
         private LocationName GetLocation() => new LocationName(this.projectId, "global");
-               
+
         private async Task<string> GetTranslation(string data)
         {
             var client = this.GetTranslationServiceClient();
@@ -83,12 +84,18 @@ namespace GoogleTranslator
             {
                 Contents = { data },
                 TargetLanguageCode = TargetLangugageCode,
-                ParentAsLocationName = GetLocation(),
+                ParentAsLocationName = this.GetLocation(),
             };
 
             var response = await client.TranslateTextAsync(request);
 
-            return response.Translations[0].TranslatedText;
+            var text = response.Translations[0].TranslatedText;
+
+            var sb = new StringBuilder(text);
+            sb.Replace(quotString, "\"");
+            sb.Replace(singleQuotString, "'");
+
+            return sb.ToString();
         }
 
         private async void Initialize()

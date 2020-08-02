@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using AzureTranslator;
+using GoogleTranslator;
 using Translator.Core;
 using Translator.Core.Domain;
 using Translator.Core.Translate;
@@ -31,20 +32,21 @@ namespace ConsoleTest
             var lines = File.ReadAllLines(pathToText, Encoding.Default);
             var valueLines = File.ReadAllLines(pathToText, valueLinesEncoding);
 
-            var jsonkeyFile = @"D:\Work\HOMM_III_Map_Text_Translate\!google\Translation-cac6d6b217ec.json";
 
-            //var t = "Наконец пришел ответ от узурпатора. Могрейну стоило огромного труда унять дрожь в руках, когда он разворачивал свиток. Гонцу, доставившему его явно было известно о содержании послания и потому он мерзко ухмылялся. \"Могрейн, сколько я себя помню, ты не отличался терпением и благоразумием.Еще когда я учил тебя тактике и стратегии, нападение было для тебя предпочтительней защиты.Но сейчас тебе стоит одуматься, ибо трон Империи мой. С каждым днем под мои знамена становятся новые воины, отступников вроде твоего брата и наемника Хааса в расчет просто не стоит брать.Явись на собрание лордов, что будет через два месяца, присягни на верность, и я не только пощажу твою жизнь, но и оставлю правителем Стоунхелма. Если же ты не прекратишь бессмысленную борьбу, то на тебя обрушится мощь всех лордов Империи, что объединятся под моим началом!\" Могрейн скомкал послание и бросил в огонь. У него оставалось ДВА месяца на то, чтобы отбить Вирилл, столицу Империи у Фордрагона.";
 
-            //var pathToCred1 = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
-            //var cred1 = File.ReadAllLines(pathToCred1);
-            //var at1 = new AzureTranslateProccessor(cred1[0], cred1[1], cred1.Length > 2 ? cred1[2] : null)
-            //{ TargetLangugage = "en" };
-            //var pre = new AzurePrepareTextTranslateProccessor(at1);
-            //var hhhh = new CombineLinesTranslateProcessor(pre);            
+            var t = "Наконец пришел ответ от узурпатора. Могрейну стоило огромного труда унять дрожь в руках, когда он разворачивал свиток. Гонцу, доставившему его явно было известно о содержании послания и потому он мерзко ухмылялся. \"Могрейн, сколько я себя помню, ты не отличался терпением и благоразумием.Еще когда я учил тебя тактике и стратегии, нападение было для тебя предпочтительней защиты.Но сейчас тебе стоит одуматься, ибо трон Империи мой. С каждым днем под мои знамена становятся новые воины, отступников вроде твоего брата и наемника Хааса в расчет просто не стоит брать.Явись на собрание лордов, что будет через два месяца, присягни на верность, и я не только пощажу твою жизнь, но и оставлю правителем Стоунхелма. Если же ты не прекратишь бессмысленную борьбу, то на тебя обрушится мощь всех лордов Империи, что объединятся под моим началом!\" Могрейн скомкал послание и бросил в огонь. У него оставалось ДВА месяца на то, чтобы отбить Вирилл, столицу Империи у Фордрагона.";
+            var t22 = "{近几百年来，随着神圣教会在大陆的不断发展，大陆各国逐渐接}	{受了格罗里亚作为大陆的名字，意为神的赞美诗。神圣历六百八}	{十二年，最强大的亡灵法师罗德里格斯带领着他的亡灵大军杀上}	{了俄狄神殿。是时，在俄狄神殿内，光明教会的圣女，光天使威}	{娜，刚刚从天界降临不久。由于身体上的弱点，威娜还无法与力}	{量已达到巅峰的亡灵法师相抗衡，以致于连灵魂也被罗德里格斯}	{所控制，被收入神器灵魂法珠内，无法返回天界。俄狄神殿被亡}	{灵亵渎，连长年笼罩神殿的圣光也消失了。罗德里格斯被愤怒的}	{天神降下审判之光，灰飞烟灭。号称光辉之神殿的俄狄神殿则被}	{净化之火燃为废墟。}";
 
-            //var t2 = hhhh.Translate(t);
+            var pathToCred1 = @"D:\Work\HOMM_III_Map_Text_Translate\!google\google.cred";
+            var cred1 = File.ReadAllLines(pathToCred1);
+            var t1 = new GoogleTranslateProccessor(cred1[0], cred1[1])
+            { TargetLangugageCode = "en" };
+            var hhhh = new CombineLinesTranslateProccessor(t1);
+            var rrr = new RemoveNontranslatedSymbolsProccessor(hhhh);
 
-            //return;
+            var t2 = rrr.Translate(t22).Result;
+
+            return;
 
             var k = 11;
             if (k == 1)
@@ -87,7 +89,7 @@ namespace ConsoleTest
 
                 var azpt = new AzurePrepareTextTranslateProccessor(at);
 
-                var clt = new CombineLinesTranslateProcessor(azpt);
+                var clt = new CombineLinesTranslateProccessor(azpt);
                
 
                 var start = DateTime.Now;

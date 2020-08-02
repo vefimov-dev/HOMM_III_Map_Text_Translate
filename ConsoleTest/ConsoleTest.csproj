@@ -57,6 +57,10 @@
       <Project>{B406483A-2B9C-420C-AE5E-DBAA451988DE}</Project>
       <Name>AzureTranslator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleTranslator\GoogleTranslator.csproj">
+      <Project>{b6ff8c48-58b2-4803-804e-a4c714361ecd}</Project>
+      <Name>GoogleTranslator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Translator.Core\Translator.Core.csproj">
       <Project>{E3E9F43C-275F-4FDE-A7FB-CBD0EF27C6C7}</Project>
       <Name>Translator.Core</Name>

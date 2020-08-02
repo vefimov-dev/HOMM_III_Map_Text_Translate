@@ -54,10 +54,11 @@
     <Compile Include="MapTextWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translate\CheckMapTranslateProccessor.cs" />
-    <Compile Include="Translate\CombineLinesTranslateProcessor.cs" />
-    <Compile Include="Translate\ITranslateProccessor.cs" />
+    <Compile Include="Translate\CombineLinesTranslateProccessor.cs" />
     <Compile Include="Translate\MultithreadMapTextTranslator.cs" />
+    <Compile Include="Translate\RemoveNontranslatedSymbolsProccessor.cs" />
     <Compile Include="Translate\SequentialMapTextTranslator.cs" />
+    <Compile Include="Translate\TranslateProccessorBase.cs" />
     <Compile Include="Utility\BinarySerializer.cs" />
     <Compile Include="Utility\StringExtentions.cs" />
   </ItemGroup>

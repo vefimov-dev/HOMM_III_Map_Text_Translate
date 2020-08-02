@@ -5,14 +5,14 @@ using Translator.Core.Utility;
 
 namespace Translator.Core.Translate
 {
-    public class CombineLinesTranslateProcessor : TranslateProccessorBase
+    public class CombineLinesTranslateProccessor : TranslateProccessorBase
     {
         private const string NewTextLine = "\t";
         private const char NewTextLineChar = '\t';
 
         private readonly TranslateProccessorBase nextTranslateProcessor;
 
-        public CombineLinesTranslateProcessor(TranslateProccessorBase nextTranslateProcessor)
+        public CombineLinesTranslateProccessor(TranslateProccessorBase nextTranslateProcessor)
         {
             this.nextTranslateProcessor = nextTranslateProcessor;
         }
