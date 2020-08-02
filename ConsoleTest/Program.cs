@@ -31,6 +31,8 @@ namespace ConsoleTest
             var lines = File.ReadAllLines(pathToText, Encoding.Default);
             var valueLines = File.ReadAllLines(pathToText, valueLinesEncoding);
 
+            var jsonkeyFile = @"D:\Work\HOMM_III_Map_Text_Translate\!google\Translation-cac6d6b217ec.json";
+
             //var t = "Наконец пришел ответ от узурпатора. Могрейну стоило огромного труда унять дрожь в руках, когда он разворачивал свиток. Гонцу, доставившему его явно было известно о содержании послания и потому он мерзко ухмылялся. \"Могрейн, сколько я себя помню, ты не отличался терпением и благоразумием.Еще когда я учил тебя тактике и стратегии, нападение было для тебя предпочтительней защиты.Но сейчас тебе стоит одуматься, ибо трон Империи мой. С каждым днем под мои знамена становятся новые воины, отступников вроде твоего брата и наемника Хааса в расчет просто не стоит брать.Явись на собрание лордов, что будет через два месяца, присягни на верность, и я не только пощажу твою жизнь, но и оставлю правителем Стоунхелма. Если же ты не прекратишь бессмысленную борьбу, то на тебя обрушится мощь всех лордов Империи, что объединятся под моим началом!\" Могрейн скомкал послание и бросил в огонь. У него оставалось ДВА месяца на то, чтобы отбить Вирилл, столицу Империи у Фордрагона.";
 
             //var pathToCred1 = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
@@ -81,9 +83,12 @@ namespace ConsoleTest
                 var pathToCred = @"D:\Work\HOMM_III_Map_Text_Translate\azure.cred";
                 var cred = File.ReadAllLines(pathToCred);
                 var at = new AzureTranslateProccessor(cred[0], cred[1], cred.Length > 2 ? cred[2] : null)
-                { TargetLangugage = "en"};
-                var clt = new CombineLinesTranslateProcessor(at);
-               // var csrt = new CustomSymbolsRemoveTranslateProccessor(new[] { "{", "}" }, clt);
+                { TargetLangugageCode = "en", SourceLangugageCode = "ru"};
+
+                var azpt = new AzurePrepareTextTranslateProccessor(at);
+
+                var clt = new CombineLinesTranslateProcessor(azpt);
+               
 
                 var start = DateTime.Now;
                 //var tt = MultithreadMapTextTranslator.Translate(mt, at);

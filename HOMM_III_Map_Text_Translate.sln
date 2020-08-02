@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator.Core", "Translat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslator", "AzureTranslator\AzureTranslator.csproj", "{B406483A-2B9C-420C-AE5E-DBAA451988DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleTranslator", "GoogleTranslator\GoogleTranslator.csproj", "{B6FF8C48-58B2-4803-804E-A4C714361ECD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B406483A-2B9C-420C-AE5E-DBAA451988DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B406483A-2B9C-420C-AE5E-DBAA451988DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B406483A-2B9C-420C-AE5E-DBAA451988DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FF8C48-58B2-4803-804E-A4C714361ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FF8C48-58B2-4803-804E-A4C714361ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FF8C48-58B2-4803-804E-A4C714361ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FF8C48-58B2-4803-804E-A4C714361ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace Translator.Core.Translate
 {
-    public class CheckMapTranslateProccessor : ITranslateProccessor
+    public class CheckMapTranslateProccessor : TranslateProccessorBase
     {
         public ConcurrentBag<string> OversizedStrings { get; } = new ConcurrentBag<string>();
 
@@ -13,7 +14,7 @@ namespace Translator.Core.Translate
 
         public int TranslationRequestsCount { get; protected set; }
 
-        public string Translate(string data)
+        public override async Task<string> Translate(string data)
         {
             if (data.Length > this.MaxLengthForStringWithoutWarning)
             {

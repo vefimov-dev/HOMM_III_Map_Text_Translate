@@ -1,22 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Translator.Core.Utility;
 
 namespace Translator.Core.Translate
 {
-    public class CombineLinesTranslateProcessor : ITranslateProccessor
+    public class CombineLinesTranslateProcessor : TranslateProccessorBase
     {
         private const string NewTextLine = "\t";
         private const char NewTextLineChar = '\t';
 
-        private readonly ITranslateProccessor nextTranslateProcessor;
+        private readonly TranslateProccessorBase nextTranslateProcessor;
 
-        public CombineLinesTranslateProcessor(ITranslateProccessor nextTranslateProcessor)
+        public CombineLinesTranslateProcessor(TranslateProccessorBase nextTranslateProcessor)
         {
             this.nextTranslateProcessor = nextTranslateProcessor;
         }
+
         string t = "Его младший брат слишко легко попадал под влияние сильных фигур";
-        public string Translate(string data)
+
+        public override async Task<string> Translate(string data)
         {
             if (data.ContainsOrdinalIgnoreCase(t))
             {
@@ -25,18 +28,19 @@ namespace Translator.Core.Translate
 
             if (data.ContainsOrdinalIgnoreCase(NewTextLine))
             {
-                return this.CombineLines(data);
+                return await this.CombineLines(data);
             }
             else
             {
-                return this.nextTranslateProcessor.Translate(data);
+                return await this.nextTranslateProcessor.Translate(data);
             }
         }
 
-        private string CombineLines(string data)
+        private async Task<string> CombineLines(string data)
         {
             var lines = new List<string>();
             int index = 0, start = 0, end = 0;
+
             while (index < data.Length)
             {
                 end = data.IndexOf(NewTextLine, start);
@@ -68,7 +72,7 @@ namespace Translator.Core.Translate
 
             var newLine = sb.ToString().Trim();
 
-            var translated = this.nextTranslateProcessor.Translate(newLine);
+            var translated = await this.nextTranslateProcessor.Translate(newLine);
 
             var separatorsCount = ((lines.Count + 1) >> 1);
 

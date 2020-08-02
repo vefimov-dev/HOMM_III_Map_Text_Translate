@@ -1,10 +1,12 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Translator.Core.Translate;
 
 namespace AzureTranslator
 {
-    public class AzurePrepareTextTranslateProccessor : ITranslateProccessor
+    public class AzurePrepareTextTranslateProccessor : TranslateProccessorBase
     {
         private readonly string[] symbolsToRemove = new[] { "{", "}", "\"", "*", "%" };
         private readonly string openQuotePattern = @"\W'";
@@ -16,8 +18,8 @@ namespace AzureTranslator
         {
             this.nexTranslateProccessor = nexTranslateProccessor;
         }
-
-        public string Translate(string data)
+        
+        public override async Task<string> Translate(string data)
         {
             data = Regex.Replace(data, openQuotePattern, " ");
             data = Regex.Replace(data, closeQuotePattern, " ");
@@ -30,7 +32,8 @@ namespace AzureTranslator
             }
 
             data = sb.ToString();
-            return this.nexTranslateProccessor.Translate(data);
+
+            return await this.nexTranslateProccessor.Translate(data);
         }
     }
 }

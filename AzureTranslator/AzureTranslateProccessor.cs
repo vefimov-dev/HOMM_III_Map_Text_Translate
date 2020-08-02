@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Translator.Core.Translate;
 
 namespace AzureTranslator
 {
-    public class AzureTranslateProccessor : ITranslateProccessor
+    public class AzureTranslateProccessor : TranslateProccessorBase
     {
         private const int MaxStringLengthForTranslation = 4995;
         private const int AttemptsCount = 3;
@@ -20,10 +21,7 @@ namespace AzureTranslator
 
         private readonly Uri getLanguagesUrl;
         private readonly string transleteUrlPattern;
-
-        // map name to code => "English" to "en";
-        private readonly Dictionary<string, string> languageMap = new Dictionary<string, string>();
-
+      
         private Uri transleteUrl;
         private string sourceLangugage;
         private string targetLangugage;
@@ -43,11 +41,9 @@ namespace AzureTranslator
             this.transleteUrlPattern = endpoint + "/translate?api-version=3.0&to={0}";
 
             this.Initialize();
-        }
+        }       
 
-        public List<TranslationErrorInfo> TranslationErrors { get; } = new List<TranslationErrorInfo>();
-
-        public string SourceLangugage
+        public override string SourceLangugageCode
         {
             get => this.sourceLangugage;
             set
@@ -57,7 +53,7 @@ namespace AzureTranslator
             }
         }
 
-        public string TargetLangugage
+        public override string TargetLangugageCode
         {
             get => this.targetLangugage;
 
@@ -68,37 +64,7 @@ namespace AzureTranslator
             }
         }
 
-        public IEnumerable<string> GetLanguages() => this.languageMap.Keys;
-
-        public bool SetTargetLanguage(string name)
-        {
-            if (this.languageMap.ContainsKey(name))
-            {
-                this.TargetLangugage = this.languageMap[name];
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool SetSourceLangugage(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                this.SourceLangugage = null;
-                return true;
-            }
-
-            if (this.languageMap.ContainsKey(name))
-            {
-                this.SourceLangugage = this.languageMap[name];
-                return true;
-            }
-
-            return false;
-        }
-
-        public string Translate(string data)
+        public override async Task<string> Translate(string data)
         {
             if (data.Length > MaxStringLengthForTranslation)
             {
@@ -115,7 +81,7 @@ namespace AzureTranslator
             {
                 try
                 {
-                    translation = this.GetTranslation(requestBody);
+                    translation = await this.GetTranslation(requestBody);
                     break;
                 }
                 catch (Exception ex)
@@ -155,7 +121,7 @@ namespace AzureTranslator
             }
         }
 
-        private string GetTranslation(string requestBody)
+        private async Task<string> GetTranslation(string requestBody)
         {
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage())
@@ -169,8 +135,8 @@ namespace AzureTranslator
                     request.Headers.Add("Ocp-Apim-Subscription-Region", this.region);
                 }
 
-                var response = client.SendAsync(request).Result;
-                var responseBody = response.Content.ReadAsStringAsync().Result;
+                var response = await client.SendAsync(request);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
                 JArray jaresult;
                 jaresult = JArray.Parse(responseBody);
@@ -183,22 +149,15 @@ namespace AzureTranslator
 
         private void SetTransaltionUrl()
         {
-            if (string.IsNullOrEmpty(this.SourceLangugage))
+            if (string.IsNullOrEmpty(this.SourceLangugageCode))
             {
-                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, this.TargetLangugage));
+                this.transleteUrl = new Uri(string.Format(this.transleteUrlPattern, this.TargetLangugageCode));
             }
             else
             {
                 this.transleteUrl = new Uri(
-                    $"{ string.Format(this.transleteUrlPattern, this.TargetLangugage) }&from={this.SourceLangugage}");
+                    $"{ string.Format(this.transleteUrlPattern, this.TargetLangugageCode) }&from={this.SourceLangugageCode}");
             }
         }       
-    }
-
-    public class TranslationErrorInfo
-    {
-        public string Message { get; set; }
-
-        public string TranslationData { get; set; }
-    }
+    }    
 }
